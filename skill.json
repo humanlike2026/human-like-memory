@@ -1,0 +1,45 @@
+{
+  "name": "human-like-memory",
+  "displayName": "Human-Like Memory",
+  "description": "Generic long-term memory commands for recalling prior conversations, saving durable facts, and searching stored context across agent runtimes.",
+  "version": "1.1.0",
+  "homepage": "https://plugin.human-like.me",
+  "author": {
+    "name": "humanlike2026",
+    "url": "https://plugin.human-like.me"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "memory",
+    "long-term-memory",
+    "conversation",
+    "recall",
+    "continuity"
+  ],
+  "main": "./SKILL.md",
+  "scripts": {
+    "memory": "./scripts/memory.mjs"
+  },
+  "triggers": [
+    "continue previous work",
+    "remember what we discussed",
+    "memory recall",
+    "memory search",
+    "memory save",
+    "save to memory",
+    "search long-term memory"
+  ],
+  "capabilities": [
+    "memory-recall",
+    "memory-save",
+    "memory-search"
+  ],
+  "requirements": {
+    "node": ">=18.0.0"
+  },
+  "notes": [
+    "Configure the API key via HUMAN_LIKE_MEM_API_KEY.",
+    "Non-secret settings can be provided via environment variables or CLI flags.",
+    "Hermes users should store non-secret settings under skills.config.human-like-memory.*."
+  ]
+}
