@@ -15,6 +15,35 @@
 
 ### Hermes Agent
 
+如果你希望 Hermes 直接把 Human-Like Memory 作为原生 `memory.provider` 使用，有两种方式：
+
+#### 方式 A：直接执行安装命令
+
+```bash
+curl -fsSL https://cdn.jsdelivr.net/npm/@humanlikememory/human-like-mem-hermes-plugin@latest/install.sh | bash
+```
+
+#### 方式 B：先安装 skill，再让 Hermes / Agent 执行本地 setup 脚本
+
+如果这个 skill 已经安装到 Hermes，会话里可以直接执行本地脚本：
+
+```bash
+bash ~/.hermes/skills/memory/human-like-memory/scripts/setup-hermes-provider.sh
+```
+
+这个脚本会从 npm 拉取 Hermes provider 包，然后完成接线和配置写入；用户不需要再手动执行外部的 `curl | bash`。
+
+上面两种方式最终都会：
+
+- 把 provider 挂到 `~/.hermes/hermes-agent/plugins/memory/humanlike`
+- 自动把 `~/.hermes/config.yaml` 里的 `memory.provider` 切换成 `humanlike`
+
+安装完成后，重启 Hermes gateway 或当前 Hermes 进程。
+
+如果你只是把这个仓库当作 skill 复制到 `~/.hermes/skills/human-like-memory`，它本身不会在“安装时”自动切换 Hermes 的 `memory.provider`；需要再显式运行一次本地 setup 脚本，或让 Agent 在会话中执行它。
+
+### Hermes Skill 模式
+
 1. 把目录复制到 `~/.hermes/skills/human-like-memory`
 2. 配置 API Key
 

@@ -17,6 +17,35 @@ This version is designed for Hermes Agent and other runtimes that can execute a 
 
 ### Hermes Agent
 
+If you want Hermes to use Human-Like Memory as the native `memory.provider`, there are two supported paths:
+
+#### Option A: Run the direct installer
+
+```bash
+curl -fsSL https://cdn.jsdelivr.net/npm/@humanlikememory/human-like-mem-hermes-plugin@latest/install.sh | bash
+```
+
+#### Option B: Install the skill first, then let Hermes / the agent run the local setup script
+
+If this skill is already installed in Hermes, you can run the local setup script from a Hermes session:
+
+```bash
+bash ~/.hermes/skills/memory/human-like-memory/scripts/setup-hermes-provider.sh
+```
+
+That script fetches the Hermes provider package from npm and performs the wiring and config update locally, so the user does not need to run the external `curl | bash` command manually.
+
+Both paths will:
+
+- Link the provider into `~/.hermes/hermes-agent/plugins/memory/humanlike`
+- Switch `memory.provider` in `~/.hermes/config.yaml` to `humanlike`
+
+After installation, restart the Hermes gateway or your current Hermes process.
+
+If you only copy this repository into `~/.hermes/skills/human-like-memory`, Hermes will get the `recall` / `search` / `save` helper commands, but it will not switch the native `memory.provider` automatically at install time; you still need to run the local setup script once, or ask the agent to run it in-session.
+
+### Hermes Skill Mode
+
 1. Copy this directory to `~/.hermes/skills/human-like-memory`
 2. Configure the API key
 

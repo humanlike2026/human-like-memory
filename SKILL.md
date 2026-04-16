@@ -1,6 +1,6 @@
 ---
 name: human-like-memory
-description: Recall prior conversations, search stored context, and save durable user facts or decisions to Human-Like Memory. Use when continuity across sessions matters or the user explicitly asks to remember something.
+description: HumanLike Memory / Human-Like Memory agent memory skill for long-term memory recall, memory search, memory save, and conversation continuity across sessions.
 version: "1.1.0"
 license: Apache-2.0
 compatibility: Requires Node.js 18+ and network access to the configured Human-Like Memory service.
@@ -57,6 +57,20 @@ required_environment_variables:
 
 Agent-usable long-term memory tools for Human-Like Memory.
 
+HumanLike Memory, Human-Like Memory, and human like memory all refer to the same skill. It focuses on agent memory recall, memory search, memory save, and continuity across sessions.
+
+## Search Aliases
+
+- HumanLike Memory
+- Human-Like Memory
+- human like memory
+- agent memory
+- long-term memory
+- memory recall
+- memory search
+- memory save
+- continuity across sessions
+
 ## When to Use
 
 - The user asks to continue earlier work, recall prior discussions, or search old context
@@ -82,6 +96,53 @@ echo '[{"role":"user","content":"..."},{"role":"assistant","content":"..."}]' | 
 ```
 
 ## Procedure
+
+For memory taxonomy, example queries, and deeper usage notes, see [README.md](./README.md) and [SECURITY.md](./SECURITY.md).
+
+### 0. Understand Hermes integration modes
+
+- This repository provides a skill and helper scripts
+- Installing the skill by itself does not change Hermes `memory.provider`
+- If you want native Hermes memory-provider integration, run:
+
+```bash
+curl -fsSL https://cdn.jsdelivr.net/npm/@humanlikememory/human-like-mem-hermes-plugin@latest/install.sh | bash
+```
+
+- That installer links the provider to `~/.hermes/hermes-agent/plugins/memory/humanlike` and sets `memory.provider: humanlike`
+- Restart Hermes after the provider install so the new memory backend is loaded
+
+If the skill is already installed in Hermes and the user wants you to activate the native provider from within the session, run:
+
+```bash
+bash {baseDir}/scripts/setup-hermes-provider.sh
+```
+
+This local setup script fetches the Hermes provider package from npm, links it into Hermes, and updates `config.yaml` so the user does not need to manually run the external `curl | bash` installer.
+
+### 0.5. Hermes activation check on first use
+
+When this skill is loaded inside a Hermes session, check whether the native Hermes memory provider is already active before assuming provider-backed memory is working.
+
+Use a quick local check such as:
+
+```bash
+rg -n "provider: humanlike" ~/.hermes/config.yaml
+ls -la ~/.hermes/hermes-agent/plugins/memory/humanlike
+```
+
+If the provider is not active:
+
+- Tell the user that the skill is installed, but native Hermes memory-provider integration is not active yet
+- Ask a short activation question such as: `HumanLike provider isn't activated in Hermes yet. Activate it now?`
+- If the user replies with an affirmative answer such as `yes`, `y`, `是`, `要`, or equivalent consent, run:
+
+```bash
+bash {baseDir}/scripts/setup-hermes-provider.sh
+```
+
+- After the script succeeds, tell the user to restart `hermes gateway` or the current Hermes CLI process if needed
+- If the user declines, continue only with the skill-level commands and do not claim the native Hermes provider is active
 
 ### 1. Ensure configuration exists
 
@@ -142,6 +203,7 @@ node {baseDir}/scripts/memory.mjs recall "recent roadmap decisions" \
 
 - Do not assume every turn needs recall; greetings and one-off generic questions usually do not
 - Do not use `save-batch` for trivial exchanges
+- Do not assume installing this skill activates the native Hermes memory provider; provider activation is a separate install step
 - Do not rely on local config files from a platform-specific runtime; this skill is designed around env vars and explicit CLI flags
 - If `HUMAN_LIKE_MEM_API_KEY` is missing, stop and surface the setup guidance instead of guessing
 
@@ -150,3 +212,4 @@ node {baseDir}/scripts/memory.mjs recall "recent roadmap decisions" \
 - Run `node {baseDir}/scripts/memory.mjs config` and confirm `apiKeyConfigured` is `true`
 - Run a targeted `recall` query and check that the JSON response is well formed
 - If save is enabled, run `save` with a harmless test message and confirm `success: true`
+- For Hermes native-provider setup, run `bash {baseDir}/scripts/setup-hermes-provider.sh`, then confirm `~/.hermes/config.yaml` contains `memory.provider: humanlike`
