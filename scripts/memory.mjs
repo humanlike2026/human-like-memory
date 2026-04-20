@@ -241,6 +241,7 @@ async function saveMemory(userMessage, assistantResponse, cliOptions) {
     conversation_id: sessionId,
     messages,
     agent_id: cfg.agentId,
+    scenario: cfg.scenario,
     tags: ['human-like-memory-skill'],
     async_mode: true,
     custom_workflows: {
@@ -386,6 +387,7 @@ async function saveBatchMemory(cliOptions) {
       content: message.content.substring(0, 20000),
     })),
     agent_id: cfg.agentId,
+    scenario: cfg.scenario,
     tags: ['human-like-memory-skill'],
     async_mode: true,
     custom_workflows: {
